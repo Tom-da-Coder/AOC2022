@@ -13,3 +13,5 @@ C:\Users\thoma\source\repos\AOC2022\Day01\obj\Debug\net6.0\refint\Day01.dll
 C:\Users\thoma\source\repos\AOC2022\Day01\obj\Debug\net6.0\Day01.pdb
 C:\Users\thoma\source\repos\AOC2022\Day01\obj\Debug\net6.0\Day01.genruntimeconfig.cache
 C:\Users\thoma\source\repos\AOC2022\Day01\obj\Debug\net6.0\ref\Day01.dll
+C:\Users\thoma\source\repos\AOC2022\Day01\bin\Debug\net6.0\input1.txt
+C:\Users\thoma\source\repos\AOC2022\Day01\bin\Debug\net6.0\input2.txt
