@@ -6,12 +6,8 @@ Console.WriteLine("07 dec, Hello, World!");
 
 int result = 0;
 var input1 = File.ReadAllLines("input1.txt");
-//var input1 = File.ReadAllLines("demo.txt");
 
-
-
-//var input2 = File.ReadAllLines("input2.txt");
-    dir curDir = new dir { name= "/" };
+dir curDir = new dir { name= "/" };
 
 Console.WriteLine(partA());
 Console.WriteLine(partB());
@@ -35,8 +31,9 @@ int partA()
         } else if (m.Groups[7].Success)
         {
             dirStack.Push(curDir);
-            curDir = curDir.subDirs.FirstOrDefault(d => d.name == m.Groups[7].Value) ?? new dir { name = m.Groups[7].Value };
-        } else if (m.Groups[10].Success)
+            curDir = curDir.subDirs.FirstOrDefault(d => d.name == m.Groups[7].Value);
+        }
+        else if (m.Groups[10].Success)
         {
             curDir.subDirs.Add(new dir { name = m.Groups[10].Value });
         }
@@ -72,11 +69,7 @@ class dir
     public int GetSum100000()
     {
         var subsum = totalSize <= 100000 ? totalSize : 0;
-        foreach (var dir in subDirs)
-        {
-            subsum += dir.GetSum100000();
-        }
-        return subsum;
+        return subDirs.Sum(d => d.GetSum100000()) + subsum;
     }
 
     public void FindBigEnought(List<int> sizes, int todelete)
