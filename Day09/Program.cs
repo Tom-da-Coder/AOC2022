@@ -2,19 +2,12 @@
 
 Console.WriteLine("09 dec, Hello, World!");
 
-int result = 0;
-//var input1 = File.ReadAllLines("input1.txt");
-var input1 = File.ReadAllLines("demo.txt");
-
-
-//var input2 = File.ReadAllLines("input2.txt");
+var input1 = File.ReadAllLines("input1.txt");
 
 Console.WriteLine(partA());
-Console.WriteLine(partB());
 
 int partA()
 {
-    //var Head = new Pnt(0, 0);
     var T = new List<Pnt>();
     for (int i = 0; i <= 9; i++)
         T.Add(new Pnt(0, 0));
@@ -22,7 +15,6 @@ int partA()
     var TailPos = new List<Pnt>();
     foreach (var line in input1)
     {
-        Console.WriteLine(line);
         var n = int.Parse(line.Substring(2));
         for (int i = 0; i < n; i++)
         {
@@ -36,59 +28,22 @@ int partA()
             for (int k = 0; k < 9; k++)
                 Follow(T[k], T[k + 1]);
             TailPos.Add(new Pnt(T[9]));
-            print();
         }
     }
-    result = TailPos.Distinct().Count();
-    return result;
-
-    void print()
-    {
-        for (int i = 4; i >= 0; i--)
-        {
-            for (int k = 0; k < 5; k++) { 
-                var q = T.FindIndex(t => t.Y == i && t.X == k);
-                Console.Write(q < 0 ? "." : (q == 0 ? "H" : q));
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine();
-    }
-}
-
-
-int partB()
-{
-    return 0;
+    return TailPos.Distinct().Count();
 }
 
 void Follow(Pnt Head, Pnt Tail)
 {
     var dx = Head.X - Tail.X;
     var dy = Head.Y - Tail.Y;
-    if (dx > 1)
-    {
-        Tail.X = Head.X - 1;
-        Tail.Y = Head.Y;
-    }
-    if (dx < -1)
-    {
-        Tail.X = Head.X + 1;
-        Tail.Y = Head.Y;
-    }
-    if (dy > 1)
-    {
-        Tail.Y = Head.Y - 1;
-        Tail.X = Head.X;
-    }
-    if (dy < -1)
-    {
-        Tail.Y = Head.Y + 1;
-        Tail.X = Head.X;
-    }
+    if (Math.Abs(dx) < 2 && Math.Abs(dy) < 2)
+        return;
+    Tail.X += Math.Sign(dx);
+    Tail.Y += Math.Sign(dy);
 }
 
-public record class Pnt // : IEquatable<Pnt>
+public record class Pnt
 {
     public int X;
     public int Y;
@@ -104,10 +59,4 @@ public record class Pnt // : IEquatable<Pnt>
         X = pnt.X;
         Y = pnt.Y;
     }
-
-    //public bool Equals(Pnt? other)
-    //{
-    //    if (other is null) return false;
-    //    return X == other.X && Y == other.Y;
-    //}
 }
