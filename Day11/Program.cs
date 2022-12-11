@@ -7,28 +7,28 @@ Console.WriteLine("11 dec, Hello, World!");
 Console.WriteLine(partA());
 //Console.WriteLine(partB());
 
-int partA()
+ulong partA()
 {
-    using (var rd = new StreamReader("demo.txt"))
+    using (var rd = new StreamReader("input1.txt"))
         while (!rd.EndOfStream)
         {
             var line = rd.ReadLine(); // Skip monkey number
             line = rd.ReadLine();
             var reItems = new Regex(@"\d+");
             var matches = reItems.Matches(line);
-            var items = matches.Select(x => int.Parse(x.Value)).ToList();
+            var items = matches.Select(x => ulong.Parse(x.Value)).ToList();
 
             line = rd.ReadLine();
             var opmtch = Regex.Match(line, @"old ([*+]) (\d+|old)");
             bool isMul = opmtch.Groups[1].Value == "*";
-            int opVal;
+            ulong opVal;
             if (opmtch.Groups[2].Value == "old")
                 opVal = 0;
             else
-                opVal = int.Parse(opmtch.Groups[2].Value);
+                opVal = ulong.Parse(opmtch.Groups[2].Value);
 
             line = rd.ReadLine();
-            int testDiv = int.Parse(Regex.Match(line, @"divisible by (\d+)").Groups[1].Value);
+            ulong testDiv = ulong.Parse(Regex.Match(line, @"divisible by (\d+)").Groups[1].Value);
             int[] dests = new int[2];
             line = rd.ReadLine();
             dests[0] = int.Parse(Regex.Match(line, @"monkey (\d+)").Groups[1].Value);
@@ -40,10 +40,11 @@ int partA()
                 rd.ReadLine();
         }
 
-    for (int round = 0; round < 20; round++)
+    for (int round = 0; round < 10000; round++)
     {
         foreach (var monkey in Monkey.monkeys)
             monkey.DoRound();
+        if (new[] {1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 }.Contains(round + 1))
         Console.WriteLine($"Round {round + 1}: " + Monkey.monkeys.Select(m => m.Times.ToString()).Aggregate((a, b) => a + ", " + b));
     }
     return Monkey.Answer();
@@ -54,14 +55,14 @@ class Monkey
 {
     public static List<Monkey> monkeys = new List<Monkey>();
 
-    public List<int> Items = new List<int>();
+    public List<ulong> Items;
     public bool OpIsMul;
-    public int OpVal;
-    public int TestDiv;
+    public ulong OpVal;
+    public ulong TestDiv;
     public int[] Destinations;
-    public int Times = 0;
+    public ulong Times = 0;
 
-    public Monkey(List<int> items, bool opsMul, int opVal, int testDiv, int[] destinations)
+    public Monkey(List<ulong> items, bool opsMul, ulong opVal, ulong testDiv, int[] destinations)
     {
         Items = items;
         OpIsMul = opsMul;
@@ -70,19 +71,21 @@ class Monkey
         Destinations = destinations;
     }
 
-    public void AddItem(int item) => Items.Add(item);
+    public void AddItem(ulong item) => Items.Add(item);
 
     public void DoRound()
     {
-        Times += Items.Count();
+        const ulong modulo = 23 * 19 * 13 * 17;
+        Times += (ulong)Items.Count();
         foreach (var item in Items)
         {
-            var val = item;
+            ulong val = item;
             if (OpIsMul)
                 val *= (OpVal > 0 ? OpVal : val);
             else
                 val += OpVal;
             //val /= 3;
+            val = val % modulo;
             if (val % TestDiv == 0)
                 monkeys[Destinations[0]].AddItem(val);
             else
@@ -91,5 +94,5 @@ class Monkey
         Items.Clear();
     }
 
-    public static int Answer() => monkeys.Select(m => m.Times).OrderDescending().Take(2).Aggregate((a, b) => a * b);
+    public static ulong Answer() => monkeys.Select(m => m.Times).OrderDescending().Take(2).Aggregate((a, b) => a * b);
 }
