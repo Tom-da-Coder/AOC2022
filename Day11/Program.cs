@@ -75,7 +75,8 @@ class Monkey
 
     public void DoRound()
     {
-        const ulong modulo = 23 * 19 * 13 * 17;
+//        const ulong modulo = 23 * 19 * 13 * 17;
+        const ulong modulo = 17 * 2 * 5 * 3 * 7 * 13 * 19 * 11;
         Times += (ulong)Items.Count();
         foreach (var item in Items)
         {
