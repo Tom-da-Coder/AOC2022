@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 #define READALL
-Console.WriteLine("14 dec, Hello, World!");
+Console.WriteLine("15 dec, Hello, World!");
 
 int result = 0;
 
