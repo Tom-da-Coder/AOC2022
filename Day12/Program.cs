@@ -57,16 +57,35 @@ void partA()
         eval(curPos.X, curPos.Y, Cell.Direction.right);
     }
 
+    Pnt walker = new Pnt(Start);
+    int steps = 0;
+    while (walker != End)
+    {
+        steps++;
+        map[walker.X, walker.Y].inpath = true;
+        switch (map[walker.X, walker.Y].dir)
+        {
+            case Cell.Direction.up: walker.X--; break;
+            case Cell.Direction.down: walker.X++; break;
+            case Cell.Direction.left: walker.Y--; break;
+            case Cell.Direction.right: walker.Y++; break;
+        }
+    }
+
     for (int y = 0; y < Ysize; y++)
     {
         for (int x = 0; x < Xsize; x++)
         {
-            Console.Write(".^>v<"[(int)map[y, x].dir]);
+            var c = map[y, x];
+            if (c.inpath) Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.Write(".^>v<"[(int)c.dir]);
+            if (c.inpath) Console.ResetColor();
         }
         Console.WriteLine();
     }
 
-    Console.WriteLine($"Steps: {(map[Start.Y, Start.X].steps)}");
+    Console.WriteLine($"Steps walker: {steps}");
+    Console.WriteLine($"Steps: {(map[Start.X, Start.Y].steps)}");
 
     void eval(int y, int x, Cell.Direction dir)
     {
@@ -115,6 +134,7 @@ class Cell
     public enum Direction { none = 0, up, right, down, left };
     public Direction dir;
     public int? steps;
+    public bool inpath = false;
 }
 
 public record Pnt
