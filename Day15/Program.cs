@@ -59,34 +59,42 @@ int partA()
 
 
 
-int partB()
+long partB()
 {
-    int result = 0;
     var sensors = input1.Select(l => new sensor(l)).ToList();
-    var edgePoints = new Dictionary<Pnt, int>();
-    foreach (var s in sensors)
+    for (var yLine = 0; yLine <= 4000000; yLine++)
     {
-        for (int i = 0; i < s.manDist; i++)
-            Add4Pnt(s.pos, i, s.manDist);
-        edgePoints.Add(new Pnt() { X = s.pos.X, Y = s.pos.Y }, 1);
-    }
-    var possible = edgePoints.Where(p => p.Value >= 4).ToList();
-    return result;
-
-    void Add4Pnt(Point sense, int offset, int mandist)
-    {
-        AddIncPnt(new Pnt { X = sense.X + offset, Y = sense.Y + mandist - offset });
-        AddIncPnt(new Pnt { X = sense.X + mandist - offset, Y = sense.Y - offset });
-        AddIncPnt(new Pnt { X = sense.X - offset, Y = sense.Y - mandist + offset });
-        AddIncPnt(new Pnt { X = sense.X - mandist + offset, Y = sense.Y + offset });
+        var runs = sensors.Select(s => s.GetRunAt(yLine)).Where(s => s != null).OrderBy(t => t.P1).ToList();
+        var merged = mergeruns(runs);
+        if (merged.Count > 1) {
+            if (merged[1].P1 - merged[0].P2 == 2)
+            {
+                long x = merged[0].P2 + 1;
+                return x * 4_000_000 + yLine;
+            }
+        }
     }
 
-    void AddIncPnt(Pnt pnt)
+    return 0;
+    List<Run> mergeruns(List<Run> runs)
     {
-        if (edgePoints.ContainsKey(pnt))
-            edgePoints[pnt] += 1;
-        else
-            edgePoints.Add(pnt, 1);
+        var cur = runs.First();
+        var ret = new List<Run>();
+        ret.Add(cur);
+        foreach (var c in runs)
+        {
+            if (c.P1 - 1 <= cur.P2)
+            {
+                if (c.P2 > cur.P2)
+                    cur.P2 = c.P2;
+            }
+            else
+            {
+                cur = new Run(c.P1, c.P2);
+                ret.Add(cur);
+            }
+        }
+        return ret;
     }
 }
 
