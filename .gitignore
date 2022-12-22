@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /.vs/AOC2022/DesignTimeBuild/.dtbcache.v2
+/.vs/AOC2022/v17/.futdcache.v2
+/.vs/AOC2022/v17/.suo
+/.vs/ProjectEvaluation/aoc2022.metadata.v5.2
+/.vs/ProjectEvaluation/aoc2022.projects.v5.2
