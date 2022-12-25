@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-Console.WriteLine("25 dec, Hello, World!");
+﻿Console.WriteLine("25 dec, Hello, World!");
 
 var input1 = File.ReadAllLines("input1.txt");
 
