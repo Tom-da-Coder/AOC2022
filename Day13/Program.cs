@@ -10,56 +10,66 @@ int result = 0;
 var input1 = File.ReadAllLines("input1.txt");
 
 
-using (var sr = new StreamReader("test.txt"))
+using (var sr = new StreamReader("input1.txt"))
 {
+    int index = 0;
     string leftline;
     while ((leftline = sr.ReadLine()) != null)
     {
+        index++;
         var rightline = sr.ReadLine();
-        //Console.WriteLine($"{leftline}\r\n{rightline}\r\n{Compare(leftline, rightline)}\r\n");
         var t1 = ParseTree(new StringReader(leftline));
         var t2 = ParseTree(new StringReader(rightline));
+        var cmp = CompareTree(t1, t2);
+        if (cmp < 0)
+            result += index;
+        //Console.WriteLine($"{leftline}\r\n{rightline}\r\n{cmp}\r\n");
 
         if (sr.ReadLine() == null)
             break;
     }
+    Console.WriteLine(result);
 }
 
-//var input2 = File.ReadAllLines("input2.txt");
-
-Console.WriteLine(partA());
 Console.WriteLine(partB());
 
-int partA()
+long partB()
 {
-    int result = 0;
-    foreach (var line in input1)
-    {
-    }
-    return result;
+    var indata = input1.Where(s => s.Length> 0).ToList();
+    indata.Add(@"[[2]]");
+    indata.Add(@"[[6]]");
+
+    var inTree = indata.Select(s => (Txt: s, Tree: ParseTree(new StringReader(s)))).ToList();
+    inTree.Sort((a, b) => CompareTree(a.Tree, b.Tree));
+    long idx1 = inTree.FindIndex(t => t.Txt == "[[2]]") + 1;
+    long idx2 = inTree.FindIndex(t => t.Txt == "[[6]]") + 1;
+    return idx1 * idx2;
 }
 
-
-
-int partB()
+int CompareTree(object a, object b)
 {
-    int result = 0;
-    foreach (var line in input1)
+    if (a is int x && b is int y)
+        return Math.Sign(x - y);
+    if (a is List<object> p && b is List<object> q)
     {
+        for (int i = 0; i < Math.Min(p.Count, q.Count); i++)
+        {
+            int res = CompareTree(p[i], q[i]);
+            if (res != 0)
+                return res;
+        }
+        return Math.Sign(p.Count - q.Count);
     }
-    return result;
+    if (a is int x2 && b is List<object> q2)
+        return CompareTree(new List<object>( new[] { a }), q2);
+    if (b is int y2 && a is List<object> p2)
+        return CompareTree(p2, new List<object>(new[] { b }));
+    return 0;
 }
-
-//List<string> ParseTree(string input)
-//{
-//    StringReader sr = new StringReader(input);
-//    if (input[0] == '[')
-
-//}
 
 object ParseTree(StringReader sr)
 {
-    object ret = null;
+    object ret = new List<object>();
     int ch = sr.Read();
     while (ch >= 0)
     {
@@ -67,62 +77,21 @@ object ParseTree(StringReader sr)
         {
             var s = ParseTree(sr);
             ch = sr.Read();
-            if (ret is List<object> ls)
-                ls.Add(s);
-            else
-                ret = s;
+            ret ??= new List<object>();
+            ((List<object>)ret).Add(s);
         }
         else if (ch == ']')
             return ret;
         else if (ch == ',')
         {
-            if (ret is not List<object>)
-                ret = new List<object>(new[] { ret });
             ch = sr.Read();
         }
         else if (char.IsDigit((char)ch))
         {
             int s = 0; while (char.IsDigit((char)ch)) { s = s * 10 + ch - '0'; ch = sr.Read(); }
-            if (ret is List<object> ls)
-                ls.Add(s);
-            else
-                ret = s;
+            ret ??= new List<object>();
+            ((List<object>)ret).Add(s);
         }
     }
     return ret;
-}
-
-static int Compare(string x, string y)
-{
-    if (x == y) return 0;
-    int i = 0; int k = 0;
-    char c1 = x[i++];
-    char c2 = y[k++];
-    while (true)
-    {
-        if (i == x.Length && k == y.Length)
-            return 0;
-        if (i == x.Length)
-            return -1;
-        if (k == y.Length)
-            return 1;
-        if (c1 == c2 && @"[],".Contains(c1))
-        {
-            c1 = x[i++];
-            c2 = y[k++];
-            continue;
-        }
-        if (char.IsDigit(c1) && char.IsDigit(c2))
-        {
-            int s1 = 0; while (char.IsDigit(c1 = x[i++])) s1 = s1 * 10 + c1 - '0';
-            int s2 = 0; while (char.IsDigit(c2 = y[k++])) s2 = s2 * 10 + c2 - '0';
-            if (s1 < s2) return -1;
-            if (s1 > s2) return 1;
-            continue;
-        }
-        if (c1 == ',' && c2 == ']')
-            return 1;
-        if (c1 == ']' && c2 == ',')
-            return -1;
-    }
 }
