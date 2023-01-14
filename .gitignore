@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /.vs/AOC2022/v17/.suo
 /.vs/ProjectEvaluation/aoc2022.metadata.v5.2
 /.vs/ProjectEvaluation/aoc2022.projects.v5.2
+/Day01/obj/Debug/net6.0/Day01.csproj.AssemblyReference.cache
