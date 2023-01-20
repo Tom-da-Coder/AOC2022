@@ -1,4 +1,6 @@
-﻿internal class Program
+﻿using System.Runtime.Serialization.Formatters.Binary;
+
+internal class Program
 {
     private static void Main(string[] args)
     {
@@ -97,6 +99,16 @@
             Console.WriteLine(string.Join(Environment.NewLine, steps.Select(s => $"{s.Step}, {s.R}, {s.C}")));
         }
 
+        void SaveArray()
+        {
+            using (var strm = new FileStream("fil.bin", FileMode.Create))
+                
+            {
+                var fmt = new BinaryFormatter();
+                fmt.Serialize(strm, DistMap);
+                strm.Flush();
+            }
+        }
 
         int WrapRow(int r) => Wrap(Height, r);
 
