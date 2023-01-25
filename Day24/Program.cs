@@ -14,18 +14,14 @@
         var result = 0;
 
         RunOnce(0, StartPnt, EndPnt);
-        var startStep = result + 1;
-        result = 0;
-        RunOnce(startStep, EndPnt, StartPnt);
-        startStep = result + 1;
-        result = 0;
-        RunOnce(startStep, StartPnt, EndPnt);
+        RunOnce(result, EndPnt, StartPnt);
+        RunOnce(result, StartPnt, EndPnt);
 
         void RunOnce(int startStep, (int r, int c) startPos, (int, int) endPos)
         {
+            result = 0;
             StopAt = endPos;
             ActivePoses.Clear();
-            //int r = back ? Height : -1, c = back ? Width - 1 : 0;
             do
             {
                 ActivePoses.Add(new Track { R = startPos.r, C = startPos.c, Step = startStep });
@@ -33,7 +29,7 @@
                 {
                     var next = ActivePoses.MinBy(p => p.Step);
                     ActivePoses.Remove(next);
-                    CheckMoves(next, endPos);
+                    CheckMoves(next);
                     if (result != 0)
                         break;
                 }
@@ -42,16 +38,9 @@
             Console.WriteLine(result);
         }
 
-        bool CheckMoves(Track trk, (int, int) endPos)
+        bool CheckMoves(Track trk)
         {
             (int gen, int r, int c) = (trk.Step, trk.R, trk.C);
-            //if ((r, c) == endPos)
-            //{
-            //    result = gen + 1;
-            //    Console.WriteLine(gen + 1);
-            //    return true;
-            //}
-            
             CheckNextPosition(r, c + 1, gen + 1);
             CheckNextPosition(r + 1, c, gen + 1);
             CheckNextPosition(r, c - 1, gen + 1);
