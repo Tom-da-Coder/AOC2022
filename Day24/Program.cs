@@ -2,6 +2,8 @@
 
 internal class Program
 {
+    public static int[,,] TPmaze = new int[301, 27, 122];
+
     private static void Main(string[] args)
     {
         Console.WriteLine("24 dec, Hello, World!");
@@ -13,8 +15,9 @@ internal class Program
         int[,,] DistMap = new int[1000, Height, Width];
         var ActivePoses = new List<Track>();
         var result = 0;
-
-        prepDistMap();
+        //prepDistMap();
+        //LoadArray();
+        //FindPath();
 
         partA();
 
@@ -46,7 +49,10 @@ internal class Program
         void RunOnce(bool back, int start)
         {
             ActivePoses.Clear();
-            ActivePoses.Add(new Track { R = back ? Height - 1 : 0, C = back ? Width - 1 : 0, Step = start });
+            int r = back ? Height - 1 : 0, c = back ? Width - 1 : 0;
+            while (!CheckNextPosition(r, c, start))
+                start++;
+            ActivePoses.Add(new Track { R = r, C = c, Step = start });
             while (ActivePoses.Count > 0)
             {
                 var next = ActivePoses.MinBy(p => p.Step);
@@ -108,6 +114,23 @@ internal class Program
                 fmt.Serialize(strm, DistMap);
                 strm.Flush();
             }
+        }
+
+        void LoadArray()
+        {
+            using (var strm = new FileStream("TPdump.bin", FileMode.Open, FileAccess.Read))
+            {
+                var fmt = new BinaryFormatter();
+                TPmaze = (int[,,])fmt.Deserialize(strm);
+            }
+        }
+
+        void FindPath()
+        {
+            int r = 26, c = 120;
+            int g = 0;
+            while (TPmaze[g, r, c] == 0)
+                g++;
         }
 
         int WrapRow(int r) => Wrap(Height, r);
